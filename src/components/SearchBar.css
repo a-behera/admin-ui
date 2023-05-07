@@ -1,0 +1,15 @@
+.search-bar {
+  width: 50%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 40px;
+  margin: 10px 0 10px 0;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.search-bar:hover {
+  border-color: rgb(22, 127, 246);
+}
