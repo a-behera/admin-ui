@@ -1,8 +1,9 @@
-import React, { useEffect, useState,useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "./UsersList.css";
+import SearchBar from "./SearchBar"
 import User from "./User";
 import Modal from "./Modal";
-import Pagination from './Pagination'
+import Pagination from "./Pagination";
 
 let PageSize = 10;
 
@@ -27,7 +28,7 @@ const UsersList = () => {
   const firstPageIndex = (currentPage - 1) * PageSize;
   const lastPageIndex = firstPageIndex + PageSize;
   const currentTableData = users.slice(firstPageIndex, lastPageIndex);
-  
+
   const selectAllHandler = () => {
     setIsCheckAll(!isCheckAll);
   };
@@ -52,11 +53,12 @@ const UsersList = () => {
         return newRow;
       })
     );
-    setModalOpen(false)
+    setModalOpen(false);
   };
 
   return (
     <>
+    <SearchBar users={users} setUsers={setUsers}/>
       <table className="table">
         <thead>
           <tr>
@@ -100,7 +102,7 @@ const UsersList = () => {
         currentPage={currentPage}
         totalCount={users.length}
         pageSize={PageSize}
-        onPageChange={page => setCurrentPage(page)}
+        onPageChange={(page) => setCurrentPage(page)}
       />
     </>
   );
