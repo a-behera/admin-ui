@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import "./UsersList.css";
 import User from "./User";
 import Modal from "./Modal";
+import Pagination from './Pagination'
+
+let PageSize = 10;
 
 const UsersList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -20,6 +24,10 @@ const UsersList = () => {
     fetchUsers();
   }, []);
 
+  const firstPageIndex = (currentPage - 1) * PageSize;
+  const lastPageIndex = firstPageIndex + PageSize;
+  const currentTableData = users.slice(firstPageIndex, lastPageIndex);
+  
   const selectAllHandler = () => {
     setIsCheckAll(!isCheckAll);
   };
@@ -66,7 +74,7 @@ const UsersList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, idx) => (
+          {currentTableData.map((user, idx) => (
             <User
               key={user.id}
               id={idx}
@@ -87,6 +95,13 @@ const UsersList = () => {
           updateRow={saveHandler}
         />
       )}
+      <Pagination
+        className="pagination-bar"
+        currentPage={currentPage}
+        totalCount={users.length}
+        pageSize={PageSize}
+        onPageChange={page => setCurrentPage(page)}
+      />
     </>
   );
 };
