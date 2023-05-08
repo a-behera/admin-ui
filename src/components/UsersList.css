@@ -43,3 +43,7 @@ span:after {
   cursor: pointer;
   box-shadow: 0px 5px 5px #ccc;
 }
+
+.row-selected {
+  color:gray
+}

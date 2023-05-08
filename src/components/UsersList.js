@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import "./UsersList.css";
-import SearchBar from "./SearchBar"
+import SearchBar from "./SearchBar";
 import User from "./User";
 import Modal from "./Modal";
 import Pagination from "./Pagination";
+import DeleteButton from "./DeleteButton";
 
 let PageSize = 10;
 
@@ -11,7 +12,6 @@ const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [isCheckAll, setIsCheckAll] = useState(false);
   const [rowToEdit, setRowToEdit] = useState(null);
 
   useEffect(() => {
@@ -28,10 +28,6 @@ const UsersList = () => {
   const firstPageIndex = (currentPage - 1) * PageSize;
   const lastPageIndex = firstPageIndex + PageSize;
   const currentTableData = users.slice(firstPageIndex, lastPageIndex);
-
-  const selectAllHandler = () => {
-    setIsCheckAll(!isCheckAll);
-  };
 
   const deleteHandler = (userId) => {
     setUsers(users.filter((_, id) => id !== userId));
@@ -56,17 +52,37 @@ const UsersList = () => {
     setModalOpen(false);
   };
 
+  const selectCheckboxHandler = (event) => {
+    const { name, checked } = event.target;
+    if (name === "allSelect") {
+      let tempUser = users.map((user) => {
+        return { ...user, isChecked: checked };
+      });
+      setUsers(tempUser);
+    } else {
+      let tempUser = users.map((user) =>
+        user.name === name ? { ...user, isChecked: checked } : user
+      );
+      setUsers(tempUser);
+    }
+  };
+
+  const deleteSelecetdHandler = () => {
+    setUsers(users.filter((user) => user.isChecked !== true));
+  }
+
   return (
     <>
-    <SearchBar users={users} setUsers={setUsers}/>
+      <SearchBar users={users} setUsers={setUsers} />
       <table className="table">
         <thead>
           <tr>
             <th>
               <input
                 type="checkbox"
-                checked={isCheckAll}
-                onClick={selectAllHandler}
+                name="allSelect"
+                checked={!users.some((user) => user?.isChecked !== true)}
+                onChange={selectCheckboxHandler}
               />
             </th>
             <th>Name</th>
@@ -83,7 +99,8 @@ const UsersList = () => {
               name={user.name}
               email={user.email}
               role={user.role}
-              isChecked={isCheckAll}
+              checkedAtt={user?.isChecked || false}
+              selectCheckbox={selectCheckboxHandler}
               deleteRow={deleteHandler}
               editRow={editHandler}
             />
@@ -97,6 +114,7 @@ const UsersList = () => {
           updateRow={saveHandler}
         />
       )}
+      <DeleteButton click={deleteSelecetdHandler}>Delete Selected</DeleteButton>
       <Pagination
         className="pagination-bar"
         currentPage={currentPage}
